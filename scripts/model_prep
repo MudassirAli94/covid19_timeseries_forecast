@@ -192,3 +192,32 @@ axes[1].legend()
 
 plt.tight_layout()
 plt.show()
+
+## Now begin ARIMA model
+
+from statsmodels.tsa.arima.model import ARIMA
+
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+
+fig, axes = plt.subplots(1, 2, figsize=(15, 4))
+plot_acf(positive_df['detrended'].dropna(), ax=axes[0])
+plot_pacf(positive_df['detrended'].dropna(), ax=axes[1])
+plt.show()
+
+
+model = ARIMA(positive_df['positive_cases'], order=(1, 1, 1))
+results = model.fit()
+print(results.summary())
+results.plot_diagnostics(figsize=(12, 8))
+plt.show()
+
+## calculate mean absolute error
+
+from sklearn.metrics import mean_absolute_error
+
+# Forecast the next 10 steps
+forecast = results.forecast(steps=10)
+print(forecast)
+
+
+
